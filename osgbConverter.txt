@@ -1,0 +1,148 @@
+
+        // Use this function to convert between standard OSGB grid references (e.g. SN 123 456) and raw OSGB eastings & northings (e.g. 12345 54321).
+		
+		// Return type is a KVP contain easting and northing double. To use, send your string elements to it:
+		
+		// string my_coords = "SN 123 456";
+		// string prefix = "SN"
+		// string eastings = "1234"
+		// string northings =  "3456"
+		
+		// KeyValuePair<double,double> new_coords = bng_prefix_to_EN(prefix,eastings,northings);
+		
+		// foreach (double value in new_coords)
+		// {
+	    //   Console.WriteLine(value)
+		// }
+		//
+		// OUTPUT: 
+		//        212340.000 
+		//        234560.000
+		//
+		// Output is now ready to convert to LL, DM, DMS, MGRS, UTM with existing NuGet packages such as GeoUK and CoordinateSharp.
+		
+		
+        private KeyValuePair<double, double> bng_prefix_to_EN(string prefix, string eastings, string northings)
+        {
+            string neweasting = "";
+            string newnorthing = "";
+            
+            Dictionary<string, KeyValuePair<int, int>> bng_prefixes = new Dictionary<string, KeyValuePair<int, int>>();
+            #region BGN Prefix Dictionary
+            bng_prefixes.Add("HL", new KeyValuePair<int, int>(0, 12));
+            bng_prefixes.Add("HM", new KeyValuePair<int, int>(1, 12));
+            bng_prefixes.Add("HN", new KeyValuePair<int, int>(2, 12));
+            bng_prefixes.Add("HO", new KeyValuePair<int, int>(3, 12));
+            bng_prefixes.Add("HP", new KeyValuePair<int, int>(4, 12));
+            bng_prefixes.Add("JL", new KeyValuePair<int, int>(5, 12));
+            bng_prefixes.Add("JM", new KeyValuePair<int, int>(6, 12));
+            bng_prefixes.Add("JN", new KeyValuePair<int, int>(7, 12));
+            bng_prefixes.Add("HQ", new KeyValuePair<int, int>(0, 11));
+            bng_prefixes.Add("HR", new KeyValuePair<int, int>(1, 11));
+            bng_prefixes.Add("HS", new KeyValuePair<int, int>(2, 11));
+            bng_prefixes.Add("HT", new KeyValuePair<int, int>(3, 11));
+            bng_prefixes.Add("HU", new KeyValuePair<int, int>(4, 11));
+            bng_prefixes.Add("JQ", new KeyValuePair<int, int>(5, 11));
+            bng_prefixes.Add("JR", new KeyValuePair<int, int>(6, 11));
+            bng_prefixes.Add("JS", new KeyValuePair<int, int>(7, 11));
+            bng_prefixes.Add("HV", new KeyValuePair<int, int>(0, 10));
+            bng_prefixes.Add("HW", new KeyValuePair<int, int>(1, 10));
+            bng_prefixes.Add("HX", new KeyValuePair<int, int>(2, 10));
+            bng_prefixes.Add("HY", new KeyValuePair<int, int>(3, 10));
+            bng_prefixes.Add("HZ", new KeyValuePair<int, int>(4, 10));
+            bng_prefixes.Add("JV", new KeyValuePair<int, int>(5, 10));
+            bng_prefixes.Add("JW", new KeyValuePair<int, int>(6, 10));
+            bng_prefixes.Add("JX", new KeyValuePair<int, int>(7, 10));
+            bng_prefixes.Add("NA", new KeyValuePair<int, int>(0, 9));
+            bng_prefixes.Add("NB", new KeyValuePair<int, int>(1, 9));
+            bng_prefixes.Add("NC", new KeyValuePair<int, int>(2, 9));
+            bng_prefixes.Add("ND", new KeyValuePair<int, int>(3, 9));
+            bng_prefixes.Add("NE", new KeyValuePair<int, int>(4, 9));
+            bng_prefixes.Add("OA", new KeyValuePair<int, int>(5, 9));
+            bng_prefixes.Add("OB", new KeyValuePair<int, int>(6, 9));
+            bng_prefixes.Add("OC", new KeyValuePair<int, int>(7, 9));
+            bng_prefixes.Add("NF", new KeyValuePair<int, int>(0, 8));
+            bng_prefixes.Add("NG", new KeyValuePair<int, int>(1, 8));
+            bng_prefixes.Add("NH", new KeyValuePair<int, int>(2, 8));
+            bng_prefixes.Add("NJ", new KeyValuePair<int, int>(3, 8));
+            bng_prefixes.Add("NK", new KeyValuePair<int, int>(4, 8));
+            bng_prefixes.Add("OF", new KeyValuePair<int, int>(5, 8));
+            bng_prefixes.Add("OG", new KeyValuePair<int, int>(6, 8));
+            bng_prefixes.Add("OH", new KeyValuePair<int, int>(7, 8));
+            bng_prefixes.Add("NL", new KeyValuePair<int, int>(0, 7));
+            bng_prefixes.Add("NM", new KeyValuePair<int, int>(1, 7));
+            bng_prefixes.Add("NN", new KeyValuePair<int, int>(2, 7));
+            bng_prefixes.Add("NO", new KeyValuePair<int, int>(3, 7));
+            bng_prefixes.Add("NP", new KeyValuePair<int, int>(4, 7));
+            bng_prefixes.Add("OL", new KeyValuePair<int, int>(5, 7));
+            bng_prefixes.Add("OM", new KeyValuePair<int, int>(6, 7));
+            bng_prefixes.Add("ON", new KeyValuePair<int, int>(7, 7));
+            bng_prefixes.Add("NQ", new KeyValuePair<int, int>(0, 6));
+            bng_prefixes.Add("NR", new KeyValuePair<int, int>(1, 6));
+            bng_prefixes.Add("NS", new KeyValuePair<int, int>(2, 6));
+            bng_prefixes.Add("NT", new KeyValuePair<int, int>(3, 6));
+            bng_prefixes.Add("NU", new KeyValuePair<int, int>(4, 6));
+            bng_prefixes.Add("OQ", new KeyValuePair<int, int>(5, 6));
+            bng_prefixes.Add("0R", new KeyValuePair<int, int>(6, 6));
+            bng_prefixes.Add("OS", new KeyValuePair<int, int>(7, 6));
+            bng_prefixes.Add("NV", new KeyValuePair<int, int>(0, 5));
+            bng_prefixes.Add("NW", new KeyValuePair<int, int>(1, 5));
+            bng_prefixes.Add("NX", new KeyValuePair<int, int>(2, 5));
+            bng_prefixes.Add("NY", new KeyValuePair<int, int>(3, 5));
+            bng_prefixes.Add("NZ", new KeyValuePair<int, int>(4, 5));
+            bng_prefixes.Add("OV", new KeyValuePair<int, int>(5, 5));
+            bng_prefixes.Add("OW", new KeyValuePair<int, int>(6, 5));
+            bng_prefixes.Add("OX", new KeyValuePair<int, int>(7, 5));
+            bng_prefixes.Add("SA", new KeyValuePair<int, int>(0, 4));
+            bng_prefixes.Add("SB", new KeyValuePair<int, int>(1, 4));
+            bng_prefixes.Add("SC", new KeyValuePair<int, int>(2, 4));
+            bng_prefixes.Add("SD", new KeyValuePair<int, int>(3, 4));
+            bng_prefixes.Add("SE", new KeyValuePair<int, int>(4, 4));
+            bng_prefixes.Add("TA", new KeyValuePair<int, int>(5, 4));
+            bng_prefixes.Add("TB", new KeyValuePair<int, int>(6, 4));
+            bng_prefixes.Add("TC", new KeyValuePair<int, int>(7, 4));
+            bng_prefixes.Add("SF", new KeyValuePair<int, int>(0, 3));
+            bng_prefixes.Add("SG", new KeyValuePair<int, int>(1, 3));
+            bng_prefixes.Add("SH", new KeyValuePair<int, int>(2, 3));
+            bng_prefixes.Add("SJ", new KeyValuePair<int, int>(3, 3));
+            bng_prefixes.Add("SK", new KeyValuePair<int, int>(4, 3));
+            bng_prefixes.Add("TF", new KeyValuePair<int, int>(5, 3));
+            bng_prefixes.Add("TG", new KeyValuePair<int, int>(6, 3));
+            bng_prefixes.Add("TH", new KeyValuePair<int, int>(7, 3));
+            bng_prefixes.Add("SL", new KeyValuePair<int, int>(0, 2));
+            bng_prefixes.Add("SM", new KeyValuePair<int, int>(1, 2));
+            bng_prefixes.Add("SN", new KeyValuePair<int, int>(2, 2));
+            bng_prefixes.Add("SO", new KeyValuePair<int, int>(3, 2));
+            bng_prefixes.Add("SP", new KeyValuePair<int, int>(4, 2));
+            bng_prefixes.Add("TL", new KeyValuePair<int, int>(5, 2));
+            bng_prefixes.Add("TM", new KeyValuePair<int, int>(6, 2));
+            bng_prefixes.Add("TN", new KeyValuePair<int, int>(7, 2));
+            bng_prefixes.Add("SQ", new KeyValuePair<int, int>(0, 1));
+            bng_prefixes.Add("SR", new KeyValuePair<int, int>(1, 1));
+            bng_prefixes.Add("SS", new KeyValuePair<int, int>(2, 1));
+            bng_prefixes.Add("ST", new KeyValuePair<int, int>(3, 1));
+            bng_prefixes.Add("SU", new KeyValuePair<int, int>(4, 1));
+            bng_prefixes.Add("TQ", new KeyValuePair<int, int>(5, 1));
+            bng_prefixes.Add("TR", new KeyValuePair<int, int>(6, 1));
+            bng_prefixes.Add("TS", new KeyValuePair<int, int>(7, 1));
+            bng_prefixes.Add("SV", new KeyValuePair<int, int>(0, 0));
+            bng_prefixes.Add("SW", new KeyValuePair<int, int>(1, 0));
+            bng_prefixes.Add("SX", new KeyValuePair<int, int>(2, 0));
+            bng_prefixes.Add("SY", new KeyValuePair<int, int>(3, 0));
+            bng_prefixes.Add("SZ", new KeyValuePair<int, int>(4, 0));
+            bng_prefixes.Add("TV", new KeyValuePair<int, int>(5, 0));
+            bng_prefixes.Add("TW", new KeyValuePair<int, int>(6, 0));
+            bng_prefixes.Add("TX", new KeyValuePair<int, int>(7, 0));
+            #endregion
+
+            foreach (KeyValuePair<string, KeyValuePair<int,int>> item in bng_prefixes)
+            {
+                if (item.Key == prefix.ToUpper())
+                {
+                    neweasting = item.Value.Key.ToString() + eastings + "0.000";
+                    newnorthing = item.Value.Value.ToString() + northings + "0.000";
+                }
+            }
+
+            return new KeyValuePair<double, double>(System.Convert.ToDouble(neweasting), System.Convert.ToDouble(newnorthing));
+        }
