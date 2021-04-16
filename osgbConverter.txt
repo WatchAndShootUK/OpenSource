@@ -1,9 +1,8 @@
 
-        // Use this function to convert between standard OSGB grid references (e.g. SN 123 456) and raw OSGB eastings & northings (e.g. 12345 54321).
+        // Use this function to convert between standard OSGB grid references (e.g. SN 123 456) and raw OSGB eastings & northings (e.g. 1234 3456).
 		
 		// Return type is a KVP contain easting and northing double. To use, send your string elements to it:
 		
-		// string my_coords = "SN 123 456";
 		// string prefix = "SN"
 		// string eastings = "1234"
 		// string northings =  "3456"
@@ -12,7 +11,7 @@
 		
 		// foreach (double value in new_coords)
 		// {
-	    //   Console.WriteLine(value)
+	  	//   Console.WriteLine(value)
 		// }
 		//
 		// OUTPUT: 
